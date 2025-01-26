@@ -1,75 +1,102 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
+import re
+from types import NoneType
+
 from bs4 import BeautifulSoup
 import pandas as pd
-import time
+import requests
 import random
+import time
 
 
 class CoffeeScraper:
     def __init__(self):
         self.base_url = "https://coffeelove.pl/pl/c/Kawa/46"
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
         self.data = []
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")  # Run in headless mode
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        self.driver = webdriver.Chrome(service=Service(), options=chrome_options)
 
     def fetch_page(self, url):
         try:
-            self.driver.get(url)
-            time.sleep(random.uniform(2, 4))  # Allow time for dynamic content to load
-            return BeautifulSoup(self.driver.page_source, 'html.parser')
-        except Exception as e:
+            time.sleep(random.uniform(1, 3))  # Be respectful to the server
+            response = requests.get(url, headers=self.headers)
+            response.raise_for_status()
+            return BeautifulSoup(response.content, "html.parser")
+        except requests.RequestException as e:
             print(f"Error fetching {url}: {e}")
             return None
 
     def parse_coffee_list(self, soup):
         coffee_links = []
-        products = soup.select('a.product-item-photo')  # Adjust this selector to match the actual HTML
+        products = soup.select('a[href*="/pl/p/"]')
         if not products:
             print("No products found on this page!")
             return []
 
         for product in products:
-            coffee_links.append(product['href'])
-        print(f"Found {len(coffee_links)} product links.")
+            coffee_links.append(product["href"])
         return coffee_links
 
     def parse_coffee_details(self, coffee_url):
-        print(f"Fetching details from {coffee_url}...")
         soup = self.fetch_page(coffee_url)
 
         if not soup:
-            print("Failed to fetch details for this product.")
+            print(f"Failed to fetch details for {coffee_url}")
             return None
 
-        coffee_data = {'url': coffee_url, 'pochodzenie': 'Unknown', 'region': 'Unknown', 'odmiana': 'Unknown'}
+        coffee_data = {"origin": "Unknown", "region": "Unknown", "variety": "Unknown"}
 
-        # Adjust selectors based on actual HTML structure
-        details = soup.find('div', class_='product-attributes')
-        if details:
-            pochodzenie = details.find(text='Pochodzenie')
-            if pochodzenie:
-                coffee_data['pochodzenie'] = pochodzenie.find_next('span').text.strip()
+        origin = ""
+        origin_parent = soup.find_all(string=re.compile(r"pochodzenie", re.IGNORECASE))
+        if len(origin_parent) > 0:
+            origin = origin_parent[0].find_next("a")
 
-            region = details.find(text='Region')
-            if region:
-                coffee_data['region'] = region.find_next('span').text.strip()
+        if origin != "":
+            coffee_data["origin"] = origin.text.strip()
+        else:
+            coffee_data["origin"] = ""
 
-            odmiana = details.find(text='Odmiana')
-            if odmiana:
-                coffee_data['odmiana'] = odmiana.find_next('span').text.strip()
+        region = ""
+        region_parent = soup.find_all(
+            "strong", string=re.compile(r"region", re.IGNORECASE)
+        )
 
-        print(f"Scraped details: {coffee_data}")
-        return coffee_data
+        if len(region_parent) > 0:
+            region = region_parent[0].find_next(
+                "div", class_="xs_product_parameter_item_title"
+            )
+
+        if region != "":
+            coffee_data["region"] = region.text.strip()
+        else:
+            coffee_data["region"] = region
+
+        variety = ""
+        variety_parent = soup.find_all(string=re.compile(r"odmiana", re.IGNORECASE))
+
+        if len(variety_parent) > 0:
+            variety = variety_parent[0].find_next(
+                "div", class_="xs_product_parameter_item_title"
+            )
+
+        if variety != "" and not isinstance(variety, NoneType):
+            coffee_data["variety"] = variety.text.strip()
+        else:
+            coffee_data["variety"] = variety
+
+        self.data.append(coffee_data)
 
     def scrape(self):
+        visited_urls = set()
         page_url = self.base_url
+
         while page_url:
-            print(f"Scraping: {page_url}")
+            if page_url in visited_urls:
+                print(f"Page already visited: {page_url}")
+                break
+
+            visited_urls.add(page_url)
+
             soup = self.fetch_page(page_url)
 
             if not soup:
@@ -82,28 +109,26 @@ class CoffeeScraper:
 
             for link in coffee_links:
                 coffee_url = f"https://coffeelove.pl{link}"
-                coffee_details = self.parse_coffee_details(coffee_url)
-                if coffee_details:
-                    self.data.append(coffee_details)
 
-            # Find next page link
-            next_page_tag = soup.find('link', rel='next')
-            page_url = next_page_tag['href'] if next_page_tag else None
+                if coffee_url not in visited_urls:
+                    self.parse_coffee_details(coffee_url)
+                    visited_urls.add(coffee_url)
 
-    def save_to_csv(self, filename='../../data/01_raw/coffeelove_data.csv'):
+            next_page_tag = soup.find("link", rel="next")
+            page_url = next_page_tag["href"] if next_page_tag else None
+
+    def save_to_tsv(self, filename="../../data/01_raw/coffeelove_data.tsv"):
         if not self.data:
             print("No data to save!")
             return
 
         df = pd.DataFrame(self.data)
-        df.to_csv(filename, index=False)
+        df.to_csv(filename, index=False, sep="\t")
+
         print(f"Data saved to {filename}")
 
-    def close(self):
-        self.driver.quit()
 
 if __name__ == "__main__":
     scraper = CoffeeScraper()
     scraper.scrape()
-    scraper.save_to_csv()
-    scraper.close()
+    scraper.save_to_tsv()

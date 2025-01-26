@@ -1,8 +1,9 @@
-from bs4 import BeautifulSoup
-import requests
-import time
 import random
 import re
+import requests
+import time
+
+from bs4 import BeautifulSoup
 import pandas as pd
 
 
