@@ -25,29 +25,32 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model = RandomForestClassifier(random_state=42, n_estimators=100)
 model.fit(X_train, y_train)
 
-joblib.dump(model, 'random_forest_model.pkl')
-joblib.dump(label_encoders, 'label_encoders.pkl')
-
 y_pred = model.predict(X_test)
 
-accuracy = accuracy_score(y_test, y_pred)
-classification_report_str = classification_report(y_test, y_pred, output_dict=False)
-classification_report_dict = classification_report(y_test, y_pred, output_dict=True)
-confusion_matrix_result = confusion_matrix(y_test, y_pred)
-
-metrics = {
-    'Metric': ['Accuracy'],
-    'Value': [accuracy]
+report = classification_report(y_test, y_pred, output_dict=True)
+selected_metrics = {
+    "Metric": [
+        "Accuracy",
+        "Macro Avg Precision",
+        "Macro Avg Recall",
+        "Macro Avg F1-Score",
+        "Weighted Avg Precision",
+        "Weighted Avg Recall",
+        "Weighted Avg F1-Score",
+    ],
+    "Value": [
+        report["accuracy"],
+        report["macro avg"]["precision"],
+        report["macro avg"]["recall"],
+        report["macro avg"]["f1-score"],
+        report["weighted avg"]["precision"],
+        report["weighted avg"]["recall"],
+        report["weighted avg"]["f1-score"],
+    ],
 }
 
-for key, value in classification_report_dict.items():
-    if isinstance(value, dict):
-        metrics['Metric'].append(f"{key} precision")
-        metrics['Value'].append(value['precision'])
-        metrics['Metric'].append(f"{key} recall")
-        metrics['Value'].append(value['recall'])
-        metrics['Metric'].append(f"{key} f1-score")
-        metrics['Value'].append(value['f1-score'])
+metrics_df = pd.DataFrame(selected_metrics)
+metrics_df.to_csv("metrics.tsv", sep="\t", index=False)
 
-metrics_df = pd.DataFrame(metrics)
-metrics_df.to_csv('metrics.tsv', sep='\t', index=False)
+joblib.dump(model, "random_forest_model.pkl")
+joblib.dump(label_encoders, "label_encoders.pkl")
