@@ -95,8 +95,16 @@ pip install -r requirements.txt
 ```
 streamlit run src/Dashboard/streamlit_dashboard.py
 ```
+**UWAGA!** W razie błędu przy uruchomieniu aplikacji `streamlit_dashboard.py` przy plikach pkl należy z folderu 
+`src/ModelTraining` usunąć oba pliki `.pkl` (`label_encoders.pkl`, `random_forest_model.pkl`). Pliki tworzone były przy
+użyciu pandas or numpy w wersji na macOS z ARM, w związku z czym może wystąpić drobny problem. Zostało to przetestowane 
+na innym komputerze z macOS oraz Intelem. Po usunięciu plików należy uruchomić `train_random_forest.py`, aby uzyskać
+pliki modelu, niezbędne dla dashboarda. Trening zajmuje dosłownie sekundę. Model oraz metryki mogą różnić się nieznacznie,
+co jednak nie wpłynie na resztę projektu.
 
 ## Uwagi dodatkowe:
 1. Projekt był formatowany przy użyciu biblioteki black.
 2. Metody, których nazwy opisują jednoznacznie ich działanie, nie posiadają komentarzy.
 3. Metody wymagający dopowiedzenia zawierają doc-stringi.
+4. W projekcie istnieją dwa konta, wsiemiatkowski oraz s20404. s20404 to mój number indeksu i do tego konta token posiadam
+w terminalu. Projekt założyłem na GitHubie z konta prywatnego.
