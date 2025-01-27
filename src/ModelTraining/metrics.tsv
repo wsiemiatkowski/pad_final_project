@@ -1,0 +1,56 @@
+Metric	Value
+Accuracy	0.9402985074626866
+0 precision	1.0
+0 recall	1.0
+0 f1-score	1.0
+1 precision	1.0
+1 recall	1.0
+1 f1-score	1.0
+2 precision	1.0
+2 recall	1.0
+2 f1-score	1.0
+3 precision	1.0
+3 recall	1.0
+3 f1-score	1.0
+4 precision	0.9024390243902439
+4 recall	0.9024390243902439
+4 f1-score	0.9024390243902439
+5 precision	0.7647058823529411
+5 recall	0.7647058823529411
+5 f1-score	0.7647058823529411
+6 precision	1.0
+6 recall	1.0
+6 f1-score	1.0
+8 precision	1.0
+8 recall	1.0
+8 f1-score	1.0
+11 precision	1.0
+11 recall	1.0
+11 f1-score	1.0
+12 precision	1.0
+12 recall	1.0
+12 f1-score	1.0
+14 precision	1.0
+14 recall	1.0
+14 f1-score	1.0
+18 precision	1.0
+18 recall	1.0
+18 f1-score	1.0
+19 precision	1.0
+19 recall	1.0
+19 f1-score	1.0
+20 precision	1.0
+20 recall	1.0
+20 f1-score	1.0
+21 precision	1.0
+21 recall	1.0
+21 f1-score	1.0
+22 precision	1.0
+22 recall	1.0
+22 f1-score	1.0
+macro avg precision	0.9791965566714491
+macro avg recall	0.9791965566714491
+macro avg f1-score	0.9791965566714491
+weighted avg precision	0.9402985074626866
+weighted avg recall	0.9402985074626866
+weighted avg f1-score	0.9402985074626866
