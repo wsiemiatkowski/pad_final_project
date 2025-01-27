@@ -6,7 +6,7 @@
   * [Struktura projektu:](#struktura-projektu)
     * [W katalogu domowym projektu:](#w-katalogu-domowym-projektu)
     * [data](#data)
-  * [src](#src)
+    * [src](#src)
   * [Instrukcja uruchomienia:](#instrukcja-uruchomienia)
   * [Dashboard:](#dashboard)
   * [Uwagi dodatkowe:](#uwagi-dodatkowe)
@@ -48,7 +48,7 @@ oraz zmapowaniu wartości brakujących
 
 3. `03_final` -> zawiera jeden plik - `merged_files.tsv`, który jest połączeniem plików z `02_intermediate`
 
-## src
+### src
 Folder src zawiera wszystkie skrypty py użyte w projekcie, a także model i jego metryki, poukładane w podfoldery:
 1. `Dashboard` zawiera jeden plik -> `streamlit_dashboard.py`, jest to skrypt napisany w bibliotece `streamlit`.
 Zawiera dasboard. Instrukcja uruchomienia znajduję się w odpowiedniej sekcji poniżej.
