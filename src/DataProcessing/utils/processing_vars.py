@@ -19,6 +19,9 @@ IRRELEVANT_WORDS_IN_ORIGIN = [
 COLORS = ["yellow", "red", "pink"]
 
 VARIETY_MAPPING = {
+    "Mundo Nuovo": 'Mundo Novo',
+    "Catimor": "Catimor 129",
+    "Catuaí": "Catuai",
     "Topazio": "",
     "Catucai": "catuai",
     "typica / coś fajnego": "typica",
@@ -70,4 +73,9 @@ VARIETY_MAPPING = {
     "Andung Sari": "",
     "Sigarar Utang": "",
     "BourbonJacksonMbirizi": "Bourbon",
+    "castillo": '',
+    "colombia": '',
+    "ana café 14": 'Anacafe 14',
+    "Ana Café 14": 'Anacafe 14',
+    'Castillo': ''
 }
