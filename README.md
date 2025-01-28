@@ -106,5 +106,6 @@ co jednak nie wpłynie na resztę projektu.
 1. Projekt był formatowany przy użyciu biblioteki black.
 2. Metody, których nazwy opisują jednoznacznie ich działanie, nie posiadają komentarzy.
 3. Metody wymagający dopowiedzenia zawierają doc-stringi.
-4. W projekcie istnieją dwa konta, wsiemiatkowski oraz s20404. s20404 to mój number indeksu i do tego konta token posiadam
+4. W projekcie istnieją dwa konta, wsiemiatkowski oraz s20404. Oba należą do mnie. s20404 to mój number indeksu i do tego konta token posiadam
 w terminalu. Projekt założyłem na GitHubie z konta prywatnego.
+5. Wnioski wraz z analizami znajdują się w Dashboardzie. 
